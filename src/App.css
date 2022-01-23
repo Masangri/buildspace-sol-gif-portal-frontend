@@ -64,6 +64,9 @@
   animation: gradient-animation 4s ease infinite;
   margin-left: 10px;
 }
+.submit-gif-button:disabled {
+    background: #777777;
+  }
 
 .footer-container {
   display: flex;
