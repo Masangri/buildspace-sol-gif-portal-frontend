@@ -8,6 +8,7 @@ import { Program, Provider, web3 } from '@project-serum/anchor';
 
 import idl from './idl.json';
 import kp from './keypair.json';
+import { render } from '@testing-library/react';
 
 require('dotenv').config();
 
@@ -34,11 +35,6 @@ const opts = {
 const TWITTER_HANDLE = process.env.REACT_APP_TWITTER_HANDLE;
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
-const TEST_GIFS = [
-  'https://c.tenor.com/wO-oCQAq6psAAAAS/zoro.gif',
-  'https://c.tenor.com/7i87Qy7soqUAAAAC/luffy-one-piece.gif',
-  'https://c.tenor.com/G5gutV4IqGAAAAAd/sanji-eneru.gif'
-]
 
 const App = () => {
   // State
@@ -125,8 +121,7 @@ const App = () => {
     }
   }
 
-  /*
-  */
+  /* */
   const onInputChange = (event) => {
     setInputValue(event.target.value);
   }
@@ -214,6 +209,15 @@ const App = () => {
               return (
                 <div className='gif-item' key={index}>
                   <img src={item.gifLink} alt={item.gifLink} />
+                  <div className="gif-item-text">
+                    <p>Submitted by:</p>
+                    <p>{item.userAddress.toString()}</p>
+                  </div>
+                  <div>
+                    <button className='cta-button gif-item-vote' onClick={() => voteForGif(index, true)}>👍</button>
+                    <button className='cta-button gif-item-vote' onClick={() => voteForGif(index, false)}>👎</button>
+                    <h3 className='gif-item-vote-text'>Score: {Number(item.score)} </h3>
+                  </div>
                 </div>
               )
             })}
@@ -250,6 +254,32 @@ const App = () => {
   }
 
   /* */
+  const voteForGif = async (gifItemIndex, gifItemAction) => {
+    try {
+      const provider = getProvider();
+      const program = new Program(idl, programID, provider);
+
+      console.log(gifItemAction ? 'Upvoting' : 'Downvoting', `GIF at index ${gifItemIndex}`);
+      await program.rpc.gifVote(
+        gifItemIndex,
+        gifItemAction,
+        {
+          accounts: {
+            baseAccount: baseAccount.publicKey,
+            user: provider.wallet.publicKey,
+          }
+        }
+      )
+      await getGifList();
+      render();
+
+    //
+    } catch (error) {
+      console.error('Error voting on GIF:', error);
+    }
+  }
+
+  /* */
   useEffect(() => {
     if (walletAddress) {
       console.log('Fetching gif list...');
@@ -275,7 +305,7 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
+          >{`built by @${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>

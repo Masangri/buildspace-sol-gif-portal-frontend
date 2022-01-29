@@ -43,6 +43,31 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "gifVote",
+      "accounts": [
+        {
+          "name": "baseAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "gifItemIndex",
+          "type": "u32"
+        },
+        {
+          "name": "gifItemAction",
+          "type": "bool"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -80,12 +105,16 @@
           {
             "name": "userAddress",
             "type": "publicKey"
+          },
+          {
+            "name": "score",
+            "type": "i64"
           }
         ]
       }
     }
   ],
   "metadata": {
-    "address": "GGuvWUsvRJJtL237i7LMUryFGQJ6sRpdDR3hr7A8cH9T"
+    "address": "2KUJfwMchPJYaT2yPrDmETtq1d77rPHsEX3rb7Je3DS9"
   }
 }
